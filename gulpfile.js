@@ -38,7 +38,7 @@ var clean = require('gulp-clean')
  */
 
 // 使用gulp-less文件编译成css
-gulp.task('lessTask', ['cleanTask'], function() {
+gulp.task('lessTask', function() {
     gulp.src('src/less/*.less')
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')})) // 错误提示
         .pipe(sourcemaps.init({loadMaps: true}))
@@ -55,7 +55,7 @@ gulp.task('lessWatch', function () {
 });
 
 // 使用gulp-htmlmin压缩html
-gulp.task('htmlminTask', ['cleanTask'], function () {
+gulp.task('htmlminTask', function () {
     var options = {
         removeComments: true, // 清除HTML注释
         collapseWhitespace: true, // 压缩HTML
@@ -103,7 +103,7 @@ gulp.task('pngquantTask', function () {
 })
 
 // 使用gulp-cache只压缩修改的图片
-gulp.task('cacheTask', ['cleanTask'], function () {
+gulp.task('cacheTask', function () {
     gulp.src('src/img/*.{png,jpg,gif,ico}')
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')})) // 错误提示
         .pipe(changed('dist/img'))
@@ -130,7 +130,7 @@ gulp.task('cssminTask', function() {
 })
 
 // 使用gulp-make-css-url-version给css文件里引用url加版本号
-gulp.task('cssverTask', ['cleanTask'], function () {
+gulp.task('cssverTask', function () {
     gulp.src('src/css/*.css')
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')})) // 错误提示
         .pipe(sourcemaps.init()) // 执行sourcemaps
@@ -142,7 +142,7 @@ gulp.task('cssverTask', ['cleanTask'], function () {
 })
 
 // 使用gulp-uglify压缩javascript文件，减小文件大小。
-gulp.task('uglifyTask', ['cleanTask'], function () {
+gulp.task('uglifyTask', function () {
     gulp.src(['src/js/*.js', '!src/js/**/scrollspy.js'])
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')})) // 错误提示
         .pipe(changed('dist/js')) // 对应匹配的文件
@@ -163,7 +163,7 @@ gulp.task('concatTask', function () {
 })
 
 // 文件复制
-gulp.task('copyTask', ['cleanTask'], function () {
+gulp.task('copyTask', function () {
     gulp.src('src/fonts/*')
         .pipe(gulp.dest('dist/fonts'))
 })
@@ -186,18 +186,18 @@ gulp.task('webserver', ['htmlminTask'], function() {
 })
 
 // 监听任务
-gulp.task('watch', ['cleanTask'], function(){
+gulp.task('watch', function(){
+    // 监听 less
+    gulp.watch( 'src/less/*.less' , ['lessTask'])
     // 监听 html
     gulp.watch( 'src/*.html' , ['htmlminTask'])
-    // 监听 less
-    gulp.watch( 'scr/less/*.less' , ['lessTask']);
     // 监听 images
-    gulp.watch( 'src/img/*.{png,jpg,gif,ico}' , ['pngquantTask']);
+    gulp.watch( 'src/img/*.{png,jpg,gif,ico}' , ['pngquantTask'])
     // 监听 js
-    gulp.watch( ['src/js/*.js','!src/js/*.min.js'] , ['uglifyTask']);
+    gulp.watch( ['src/js/*.js','!src/js/*.min.js'] , ['uglifyTask'])
     // 监听 css
-    gulp.watch( 'src/css/*.css' , ['cssverTask']);
+    gulp.watch( 'src/css/*.css' , ['cssverTask'])
 })
 
 // 默认任务
-gulp.task('default',['cleanTask', 'htmlminTask', 'copyTask', 'cssverTask', 'uglifyTask', 'cacheTask', 'lessTask', 'watch', 'webserver'])
+gulp.task('default',[ 'htmlminTask', 'copyTask', 'cssverTask', 'uglifyTask', 'cacheTask', 'lessTask', 'webserver', 'watch'])
