@@ -33,10 +33,6 @@ var concat = require('gulp-concat')
 // 文件清理
 var clean = require('gulp-clean')				
 
-/* 
-   开发环境( Ddevelop Task )
- */
-
 // 使用gulp-less文件编译成css
 gulp.task('lessTask', function() {
     gulp.src('src/less/*.less')
