@@ -33,7 +33,9 @@ var concat = require('gulp-concat')
 // 文件清理
 var clean = require('gulp-clean')				
 
-// 使用gulp-less文件编译成css
+/**
+ * 使用gulp-less文件编译成css
+ */
 gulp.task('lessTask', function() {
     gulp.src('src/less/*.less')
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')})) // 错误提示
@@ -42,15 +44,19 @@ gulp.task('lessTask', function() {
 		.pipe(less()) // 将less文件编译成css
         .pipe(cssmin()) // 压缩css
         .pipe(sourcemaps.write('./'))
-		.pipe(gulp.dest('dist/css')) // 将会在dist/css下生成index.css和detail.css
+		.pipe(gulp.dest('dist/css')) // 将会在dist/css下生成index.css
 })
 
-// watch监测less文件的改变
+/**
+ * watch监测less文件的改变
+ */
 gulp.task('lessWatch', function () {
     gulp.watch('src/**/*.less', ['lessTask']); // 当src文件或者子文件下的某个less文件发生改变时，调用lessTask任务
 });
 
-// 使用gulp-htmlmin压缩html
+/**
+ * 使用gulp-htmlmin压缩html
+ */
 gulp.task('htmlminTask', function () {
     var options = {
         removeComments: true, // 清除HTML注释
@@ -71,7 +77,9 @@ gulp.task('htmlminTask', function () {
     
 })
 
-// 使用gulp-imagemin压缩图片
+/**
+ * 使用gulp-imagemin压缩图片
+ */
 gulp.task('imageminTask', function () {
     var option = {
         optimizationLevel: 5, //类型：Number  默认：3  取值范围：0-7（优化等级）
@@ -85,7 +93,9 @@ gulp.task('imageminTask', function () {
         .pipe(gulp.dest('dist/img'))
 })
 
-// 使用imagemin-pngquant深度压缩图片
+/**
+ * 使用imagemin-pngquant深度压缩图片
+ */
 gulp.task('pngquantTask', function () {
     gulp.src('src/img/*.{png,jpg,gif,ico}')
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')})) // 错误提示
@@ -98,7 +108,9 @@ gulp.task('pngquantTask', function () {
         .pipe(gulp.dest('dist/img'));
 })
 
-// 使用gulp-cache只压缩修改的图片
+/**
+ * 使用gulp-cache只压缩修改的图片
+ */
 gulp.task('cacheTask', function () {
     gulp.src('src/img/*.{png,jpg,gif,ico}')
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')})) // 错误提示
@@ -111,7 +123,9 @@ gulp.task('cacheTask', function () {
         .pipe(gulp.dest('dist/img'));
 })
 
-// 使用gulp-clean-css压缩css文件
+/**
+ * 使用gulp-clean-css压缩css文件
+ */
 gulp.task('cssminTask', function() {
     var option = {
         advanced: true,//类型：Boolean 默认：true [是否开启高级优化（合并选择器等）]
@@ -122,10 +136,12 @@ gulp.task('cssminTask', function() {
     gulp.src('src/css/*.css')
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')})) // 错误提示
         .pipe(cssmin(option)) // 压缩css
-		.pipe(gulp.dest('dist/css')) // 将会在dist/css下生成index.css和detail.css
+		.pipe(gulp.dest('dist/css')) // 将会在dist/css下生成index.css
 })
 
-// 使用gulp-make-css-url-version给css文件里引用url加版本号
+/**
+ * 使用gulp-make-css-url-version给css文件里引用url加版本号
+ */
 gulp.task('cssverTask', function () {
     gulp.src('src/css/*.css')
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')})) // 错误提示
@@ -137,7 +153,9 @@ gulp.task('cssverTask', function () {
         .pipe(gulp.dest('dist/css'));
 })
 
-// 使用gulp-uglify压缩javascript文件，减小文件大小。
+/**
+ * 使用gulp-uglify压缩javascript文件，减小文件大小。
+ */
 gulp.task('uglifyTask', function () {
     gulp.src(['src/js/*.js', '!src/js/**/scrollspy.js'])
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')})) // 错误提示
@@ -149,7 +167,9 @@ gulp.task('uglifyTask', function () {
         .pipe(gulp.dest('dist/js'));
 });
 
-// 使用gulp-concat合并javascript文件，减少网络请求。
+/**
+ * 使用gulp-concat合并javascript文件，减少网络请求。
+ */
 gulp.task('concatTask', function () {
     gulp.src(['dist/js/*.js'])
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')})) // 错误提示
@@ -158,20 +178,26 @@ gulp.task('concatTask', function () {
         .pipe(gulp.dest('dist/js'))
 })
 
-// 文件复制
+/**
+ * 文件复制
+ */
 gulp.task('copyTask', function () {
     gulp.src('src/fonts/*')
         .pipe(gulp.dest('dist/fonts'))
 })
 
-// 清理文件
+/**
+ * 清理文件
+ */
 gulp.task('cleanTask', function() {
     var stream = gulp.src( 'dist', {read: false} ) // 清理maps文件
         .pipe(clean())
     return stream
 })
 
-// 注册任务
+/**
+ * 注册任务
+ */
 gulp.task('webserver', ['htmlminTask'], function() {
     gulp.src( 'dist' ) // 服务器目录（./代表根目录）
     .pipe(webserver({ // 运行gulp-webserver
@@ -181,7 +207,9 @@ gulp.task('webserver', ['htmlminTask'], function() {
     }))
 })
 
-// 监听任务
+/**
+ * 监听任务
+ */
 gulp.task('watch', function(){
     // 监听 less
     gulp.watch( 'src/less/*.less' , ['lessTask'])
@@ -195,5 +223,7 @@ gulp.task('watch', function(){
     gulp.watch( 'src/css/*.css' , ['cssverTask'])
 })
 
-// 默认任务
+/**
+ * 默认任务
+ */
 gulp.task('default',[ 'htmlminTask', 'copyTask', 'cssverTask', 'uglifyTask', 'cacheTask', 'lessTask', 'webserver', 'watch'])
